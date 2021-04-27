@@ -188,7 +188,7 @@ barraTiempos.place (relx=0.5, rely=0.05, anchor=CENTER)
 
 # Se define el slider para el número de términos.
 barraTérminos = Scale(ventana, from_=2, to=50, tickinterval=0.48,length=400, bg = 'White',
-resolution=1, showvalue=True, orient='horizontal', label="Presición", cursor = "hand1")
+resolution=1, showvalue=True, orient='horizontal', label="Número de Términos", cursor = "hand1")
 barraTérminos.bind ("<ButtonRelease-1>",Graficar)
 barraTérminos.set(10)
 
