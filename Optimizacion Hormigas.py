@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from time import time
 from numpy.matrixlib.defmatrix import matrix
 
-# Se definen las variables inciales.
+# Se definen las variables iniciales.
 iniciarTiempo = time ()
 cantidadHormigas = 20
 alpha = 2
@@ -15,7 +15,7 @@ rho = 0.25
 
 def CargarCiudades():
     """
-    Se definen las coordenadas de las ciudades del sistema
+    Se definen las coordenadas de las ciudades del sistema.
     
     Parámetros de la función:
     ------------------------
@@ -39,11 +39,11 @@ def CargarCiudades():
 
 def FeromonasIniciales (cantidadCiudades, tao0):
     """
-    Se obtiene una matriz cuadrada con los valores de las feromonas inicales del sistema.
+    Se obtiene una matriz cuadrada con los valores de las feromonas iniciales del sistema.
     
     Parámetros de la función:
     ------------------------
-    cantidadCiuades: Número de ciudades presente en el sistema.
+    cantidadCiudades: Número de ciudades presente en el sistema.
     tao0: Constante que da el valor a las feromonas iniciales.
     
     Salida de la función
@@ -100,7 +100,7 @@ def ObtenerProbabilidad (cantidadCiudades, nivelFeromonas, visibilidad, jCiudad,
     
     Parámetros de la función:
     ------------------------
-    cantidadCiuades: Número de ciudades presente en el sistema.
+    cantidadCiuades: Número de ciudades presentes en el sistema.
     nivelFeromonas: Matriz con los valores de las feromonas del sistema.
     visibilidad: Matriz con los valores de visibilidad del sistema.
     jCiudad: Ciudad en la que se encuentra la hormiga.
@@ -219,7 +219,7 @@ def CálculoDeltaTau(colecciónCaminos, colecciónLongitudCaminos):
 
     Salida de la función
     ---------------------
-    Valor del DeltaTao en el sistema.
+    Valor del deltaTao en el sistema.
 
     """
 
@@ -340,15 +340,18 @@ def OptimizacionHormigas (tiempoInicial):
     Trayecto con menor distancia realizado por cierta hormiga.
 
     """
-
+    # Se obtienen las coordenadas y la cantidad de ciudades.
     ciudades = CargarCiudades ()
     cantidadCiudades = len(ciudades)
 
+    # Se establece la menor distancia deseada.
     menorDistancia = 1e4
     menorDistanciaDeseada = 120
 
     iIteración = 0
 
+    # Se obtiene la ciudad en la q se coloca cierta hormiga y se calcula la distancia mínima que recorre.
+    # Esto para la obteción de los niveles iniciales de las feromonas y la visibilidad.
     ciudadInicial = random.randint (0, cantidadCiudades - 1)
     distanciaMinima = ObtenerLongitudCaminoMasCercano (ciudades, ciudadInicial)
     tao0 = cantidadHormigas / distanciaMinima
@@ -357,21 +360,24 @@ def OptimizacionHormigas (tiempoInicial):
 
     visibilidad = ObtenerVisibilidad (ciudades)
 
+    # Se define un bucle en el que se realiza el cálculo mientras no se obtenga la distancia deseada.
     while menorDistancia > menorDistanciaDeseada:
         iIteración += 1
         coleccionCaminos = []
         coleccionDistancia = []
 
+        # Se define un condicional en el que la simulación se detenga luego de 100 iteraciones.
         if iIteración > 100:
             menorDistanciaDeseada = 50000
             print ('No se alcanzó la distancia deseada en 100 interaciones.')
 
+        # Se crea el ciclo para obtener los trayectos para cada hormiga.
         for kHormiga in range (1, cantidadHormigas):
             trayecto = ConstruirTrayecto (nivelFeromonas, visibilidad, cantidadCiudades)
 
             distanciaRecorrida = DistanciaRecorrida (trayecto, ciudades)
 
-
+            # Se define un condicional para imprimir resultados cuando se mejore el recorrido.
             if distanciaRecorrida < menorDistancia:
                 menorDistancia = distanciaRecorrida
                 print('Iteración {}, hormiga {}: longitud del camino más corto = {}'.format(iIteración, kHormiga, menorDistancia))
@@ -384,17 +390,13 @@ def OptimizacionHormigas (tiempoInicial):
             coleccionCaminos.append (trayecto)
             coleccionDistancia.append (distanciaRecorrida)
 
-
+            # Se actualizan los niveles de feromonas una vez que la hormiga complete el recorrido.
             deltaTau = CálculoDeltaTau(coleccionCaminos, coleccionDistancia)
             nivelFeromonas = ActualizarNivelFeromonas(nivelFeromonas, deltaTau)
     
-    
-    
+    # Se grafican los resultados y se guardan en un archivo txt.
     menorCamino = np.array (menorCamino)
     np.savetxt ("caminoMásCorto_SH.txt", menorCamino)
     Graficar (ciudades, menorCamino)
 
-
 OptimizacionHormigas (iniciarTiempo)
-
-
